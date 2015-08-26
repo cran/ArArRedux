@@ -25,6 +25,6 @@ denominator isotopes.
 data(Melbourne)
 C <- calibration(Melbourne$X,"DCAL")
 A <- massfractionation(C,Melbourne$fract)
-plotcorr(A$covmat)
+plotcorr(A)
 }
 

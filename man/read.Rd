@@ -49,6 +49,6 @@ dfile <- system.file("Calibration.csv",package="ArArRedux")
 masses <- c("Ar37","Ar38","Ar39","Ar40","Ar36")
 dlabels <- c("H1","AX","L1","L2")
 X <- read(samplefile,masses,"EXB#",c(3,15),kfile,cafile,dfile,dlabels)
-plotcorr(X$covmat)
+plotcorr(X)
 }
 

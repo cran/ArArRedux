@@ -24,6 +24,6 @@ data(Melbourne)
 R <- get4039(Melbourne$X,Melbourne$irr)
 J <- getJfactors(R)
 ages <- getages(J)
-plotcorr(ages$covmat)
+plotcorr(ages)
 }
 

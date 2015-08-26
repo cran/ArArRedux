@@ -10,7 +10,7 @@ some ARGUS-IV data from the University of Melbourne
 }
 \examples{
 data(Melbourne)
-plotcorr(Melbourne$X$covmat)
+plotcorr(Melbourne$X)
 }
 \author{
 David Philips \email{dphillip@unimelb.edu.au}

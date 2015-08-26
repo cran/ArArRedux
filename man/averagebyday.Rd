@@ -26,6 +26,6 @@ dlabels <- c("H1","AX","L1","L2")
 md <- loaddata(dfile,dlabels,PH=TRUE)
 ld <- fitlogratios(blankcorr(md))
 d <- averagebyday(ld,"DCAL")
-plotcorr(d$covmat)
+plotcorr(d)
 }
 

@@ -20,6 +20,6 @@ Apply the interference correction for the Cl-decay products
 \examples{
 data(Melbourne)
 Cl <- clcorrection(Melbourne$X,Melbourne$irr)
-plotcorr(Cl$covmat)
+plotcorr(Cl)
 }
 

@@ -1,5 +1,3 @@
-graphics.off()
-rm(list=ls())
 
 #' Create a new \code{\link{redux}} object
 #'
@@ -116,7 +114,7 @@ plot.timeresolved <- function(x,label,mass,...){
     }
     k <- which(x$masses==mass)
     i <- j*nmasses(x)+k
-    plot(x$thetime[,i],x$d[,i],type='p')
+    graphics::plot(x$thetime[,i],x$d[,i],type='p')
 }
 #' @examples
 #' mPH <- loaddata(samplefile,masses,PH=TRUE)
@@ -342,7 +340,7 @@ getruns.timeresolved <- function(x,i,...){
 #' data(Melbourne)
 #' ages <- process(Melbourne$X,Melbourne$irr,Melbourne$fract)
 #' MD <- subset(ages,labels=c("MD2-1","MD2-2","MD2-3","MD2-4","MD2-5"))
-#' plotcorr(MD$covmat)
+#' plotcorr(MD)
 #' @rdname subset
 #' @export
 subset.timeresolved <- function(x,i=NULL,labels=NULL,...){
@@ -354,7 +352,7 @@ subset.timeresolved <- function(x,i=NULL,labels=NULL,...){
     out$irr <- x$irr[i]
     out$pos <- x$pos[i]
     out$labels <- x$labels[i]
-    if (is(x,"blankcorrected")){ out$blankindices <- x$blankindices[i] }
+    if (methods::is(x,"blankcorrected")){ out$blankindices <- x$blankindices[i] }
     return(out)
 }
 #' @rdname subset
@@ -409,7 +407,7 @@ subset.results <- function(x,i=NULL,labels=NULL,...){
 #' m <- loaddata(samplefile,masses) # samples and J-standards
 #' blanklabel <- "EXB#"
 #' l <- fitlogratios(blankcorr(m,blanklabel),"Ar40")
-#' plotcorr(l$covmat)
+#' plotcorr(l)
 #' @export
 blankcorr <- function(x,...){ UseMethod("blankcorr",x) }
 #' @rdname blankcorr
@@ -463,7 +461,7 @@ blankcorr.PHdata <- function(x,blanklabel=NULL,prefix='',...){
 #' mk <- loaddata(kfile,masses)
 #' lk <- fitlogratios(blankcorr(mk,"EXB#","K:"),"Ar40")
 #' k <- getmasses(lk,"Ar39","Ar40") # subset on the relevant isotopes
-#' plotcorr(k$covmat)
+#' plotcorr(k)
 #' @export
 getmasses <- function(x,...){ UseMethod("getmasses",x) }
 #' @rdname getmasses
@@ -498,7 +496,7 @@ getmasses.logratios <- function(x,num,den,invert=FALSE,...){
     out$den <- x$den[i]
     out$intercepts <- x$intercepts[i]
     out$covmat <- x$covmat[i,i]
-    out$nlr <- hist(i,breaks=c(0,cumsum(x$nlr)),
+    out$nlr <- graphics::hist(i,breaks=c(0,cumsum(x$nlr)),
                     plot=FALSE)$counts
     return(out)
 }
@@ -528,7 +526,7 @@ replacenegatives <- function(x){
     isnegative <- apply(x$d<0,2,"sum")>0
     ntoreplace <- sum(isnegative)
     out$d[,isnegative] <- # effectively set to zero
-    value <- seq(from=1e-18,to=1e-20,length.out=ncycles(x)*ntoreplace)
+    seq(from=1e-18,to=1e-20,length.out=ncycles(x)*ntoreplace)
     return(out)
 }
 
@@ -625,7 +623,7 @@ takelogs <- function(x){
 #' m <- loaddata(samplefile,masses) # samples and J-standards
 #' blanklabel <- "EXB#"
 #' l <- fitlogratios(blankcorr(m,blanklabel),"Ar40")
-#' plotcorr(l$covmat)
+#' plotcorr(l)
 #' @export
 fitlogratios <- function(x,...){ UseMethod("fitlogratios",x) }
 #' @rdname fitlogratios
@@ -685,7 +683,7 @@ timezero <- function(x){
     irunsout <- 0
     for (i in bi){ # loop through the groups
         irunsx <- which(i==x$blankindices)
-        irunsout <- tail(irunsout,n=1) + (1:length(irunsx))
+        irunsout <- utils::tail(irunsout,n=1) + (1:length(irunsx))
         g <- subset(x,irunsx) # extract group
         out <- setfit(out,fit(g),nmasses,irunsout)
     }
@@ -710,15 +708,15 @@ fit <- function(x){
     } else {
         thetime <- x$thetime
     }
-    f <- lm(x$d ~ thetime)
+    f <- stats::lm(x$d ~ thetime)
     if (nruns(x) == 1 & nmasses(x) == 1) { # only one intercept
-        out$intercepts <- coef(f)["(Intercept)"]
+        out$intercepts <- stats::coef(f)["(Intercept)"]
         covcolname <- "(Intercept)"
     } else { # an entire row of intercepts
-        out$intercepts <- coef(f)["(Intercept)",]
+        out$intercepts <- stats::coef(f)["(Intercept)",]
         covcolname <- ":(Intercept)"
     }
-    myvcov <- vcov(f)
+    myvcov <- stats::vcov(f)
     j <- which(colnames(myvcov)==covcolname)
     out$covmat <- myvcov[j,j]
     return(out)
@@ -744,7 +742,7 @@ fit <- function(x){
 #' plot(m,"MD2-1a","Ar40")
 #' @export
 loaddata <- function(fname,masses,MS="ARGUS-VI",PH=FALSE){
-    thetable <- read.csv(file=fname,header=FALSE,skip=3)
+    thetable <- utils::read.csv(file=fname,header=FALSE,skip=3)
     nrows <- dim(thetable)[1] # number of MS runs
     ncols <- dim(thetable)[2] # number of columns
     nmass <- length(masses) # number of isotopes
@@ -785,7 +783,7 @@ theday <- function(thedate){
 #' @examples
 #' data(Melbourne)
 #' K <- average(Melbourne$X,grep("K:",Melbourne$X$labels),newlabel="K-glass")
-#' plotcorr(K$covmat)
+#' plotcorr(K)
 #' @export
 average <- function(x,i=NULL,newlabel=NULL){
     if (length(i)==0) return(x)
@@ -816,7 +814,7 @@ average <- function(x,i=NULL,newlabel=NULL){
 #' md <- loaddata(dfile,dlabels,PH=TRUE)
 #' ld <- fitlogratios(blankcorr(md))
 #' d <- averagebyday(ld,"DCAL")
-#' plotcorr(d$covmat)
+#' plotcorr(d)
 #' @export
 averagebyday <- function(x,newlabel){
     out <- x
@@ -1003,7 +1001,7 @@ Jcal <- function(X,clabel,detectors){
 #' @examples
 #' data(Melbourne)
 #' C <- calibration(Melbourne$X,"DCAL")
-#' plotcorr(C$covmat)
+#' plotcorr(C)
 #' @export
 calibration <- function(X,clabel){
     j <- grep(clabel,X$labels,invert=TRUE)
@@ -1075,14 +1073,14 @@ air <- function(X){
 #' data(Melbourne)
 #' C <- calibration(Melbourne$X,"DCAL")
 #' A <- massfractionation(C,Melbourne$fract)
-#' plotcorr(A$covmat)
+#' plotcorr(A)
 #' @export
 massfractionation <- function(X,fract){
     fdet <- X$detectors[c("Ar37","Ar40")]
     # add the air shot data
     errorlessair <- air(X)
     errorlessair$covmat <- 0
-    if (is(fract,"logratios")){
+    if (methods::is(fract,"logratios")){
         Y <- concat(list(X,fract,errorlessair))
     } else {
         Y <- concat(c(list(X),fract,list(errorlessair)))
@@ -1208,7 +1206,7 @@ getDmatrix <- function(X,irradiations,isotope){
 #' C <- calibration(Melbourne$X,"DCAL")
 #' A <- massfractionation(C,Melbourne$fract)
 #' D9 <- decaycorrection(A,Melbourne$irr,"Ar39")
-#' plotcorr(D9$covmat)
+#' plotcorr(D9)
 #' @export
 decaycorrection <- function(X,irr,isotope){
     out <- X
@@ -1272,7 +1270,7 @@ getEmatrix <- function(X,irradiations){
 #' @examples
 #' data(Melbourne)
 #' Cl <- clcorrection(Melbourne$X,Melbourne$irr)
-#' plotcorr(Cl$covmat)
+#' plotcorr(Cl)
 #' @export
 clcorrection <- function(X,irr){
     E <- getEmatrix(X,irr)
@@ -1344,7 +1342,7 @@ getabcdef <- function(Cl){
 #' @examples
 #' data(Melbourne)
 #' R <- get4039(Melbourne$X,Melbourne$irr)
-#' plotcorr(R$covmat)
+#' plotcorr(R)
 #' @export
 get4039 <- function(X,irr){
     Y <- getabcdef(X)
@@ -1359,7 +1357,7 @@ get4039 <- function(X,irr){
     J <- matrix(0,nrow=ns,ncol=ni)
     hasKglass <- "K-glass" %in% X$labels
     hasCasalt <- "Ca-salt" %in% X$labels
-    if (hasKglass) { ff <- tail(Y$intercepts,n=1) }
+    if (hasKglass) { ff <- utils::tail(Y$intercepts,n=1) }
     else { ff <- 0 }
     for (i in 1:ns){
         j <- (i-1)*5
@@ -1448,7 +1446,7 @@ getJJ <- function(RS,ns,lambda,ts){
 #' data(Melbourne)
 #' R <- get4039(Melbourne$X,Melbourne$irr)
 #' J <- getJfactors(R)
-#' plotcorr(J$covmat)
+#' plotcorr(J)
 #' @export
 getJfactors <- function(R){
     RS <- interpolateRJ(R)
@@ -1483,13 +1481,13 @@ getJfactors <- function(R){
 #' R <- get4039(Melbourne$X,Melbourne$irr)
 #' J <- getJfactors(R)
 #' ages <- getages(J)
-#' plotcorr(ages$covmat)
+#' plotcorr(ages)
 #' @export
 getages <- function(RJ){
     out <- list()
     class(out) <- "results"
     ns <- (length(RJ$intercepts)-1)/2
-    lambda <- tail(RJ$intercepts,n=1)
+    lambda <- utils::tail(RJ$intercepts,n=1)
     out$thedate <- RJ$thedate[1:ns]
     out$labels <- RJ$labels[1:ns]
     out$ages <- log(1+RJ$intercepts[1:ns]*
@@ -1597,14 +1595,83 @@ summary.results <- function(object,...){
 #' Converts the covariance matrix to a correlation matrix and plots
 #' this is a coloured image for visual inspection.
 #' 
-#' @param covmat a covariance matrix
+#' @param X a data structure (list) containing an item called `covmat' (covariance matrix)
 #' @examples
 #' data(Melbourne)
-#' plotcorr(Melbourne$X$covmat)
+#' plotcorr(Melbourne$X)
 #' @export
-plotcorr <- function(covmat){
-    filled.contour(cov2cor(covmat),
-                   plot.axes=axis(1,xaxt="n"),key.axes=axis(4))
+plotcorr <- function(X){
+    image.with.legend(z=stats::cov2cor(X$covmat),color.palette=grDevices::heat.colors)
+}
+
+# modified version of filled.contour with ".filled.contour" part replaced with "image"
+# function. Note that the color palette is a flipped heat.colors rather than cm.colors
+image.with.legend <- function (x = seq(1, nrow(z), length.out = nrow(z)), y = seq(1, 
+    ncol(z), length.out=nrow(z)), z, xlim = range(x, finite = TRUE), 
+    ylim = range(y, finite = TRUE), zlim = range(z, finite = TRUE), 
+    levels = pretty(zlim, nlevels), nlevels = 20, color.palette = grDevices::heat.colors, 
+    col = rev(color.palette(length(levels) - 1)), plot.title, plot.axes,
+    key.title, key.axes, asp = NA, xaxs = "i", yaxs = "i", las = 1, 
+    axes = TRUE, frame.plot = axes, ...) {
+    if (missing(z)) {
+        if (!missing(x)) {
+            if (is.list(x)) {
+                z <- x$z
+                y <- x$y
+                x <- x$x
+            }
+            else {
+                z <- x
+                x <- seq.int(1, nrow(z), length.out = nrow(z))
+            }
+        }
+        else stop("no 'z' matrix specified")
+    }
+    else if (is.list(x)) {
+        y <- x$y
+        x <- x$x
+    }
+    if (any(diff(x) <= 0) || any(diff(y) <= 0)) 
+        stop("increasing 'x' and 'y' values expected")
+    mar.orig <- (par.orig <- graphics::par(c("mar", "las", "mfrow")))$mar
+    on.exit(graphics::par(par.orig))
+    w <- (3 + mar.orig[2L]) * graphics::par("csi") * 2.54
+    graphics::layout(matrix(c(2, 1), ncol = 2L), widths = c(1, graphics::lcm(w)))
+    graphics::par(las = las)
+    mar <- mar.orig
+    mar[4L] <- mar[2L]
+    mar[2L] <- 1
+    graphics::par(mar = mar)
+    graphics::plot.new()
+    graphics::plot.window(xlim = c(0, 1), ylim = range(levels),
+                xaxs = "i", yaxs = "i")
+    graphics::rect(0, levels[-length(levels)], 1, levels[-1L], col = col)
+    if (missing(key.axes)) {
+        if (axes) 
+            graphics::axis(4)
+    }
+    else key.axes
+    graphics::box()
+    if (!missing(key.title)) 
+        key.title
+    mar <- mar.orig
+    mar[4L] <- 1
+    graphics::par(mar = mar)
+    graphics::image(x,y,z,col=col,xlab="",ylab="")
+    if (missing(plot.axes)) {
+        if (axes) {
+            graphics::title(main = "", xlab = "", ylab = "")
+            graphics::Axis(x, side = 1)
+            graphics::Axis(y, side = 2)
+        }
+    }
+    else plot.axes
+    if (frame.plot) 
+        graphics::box()
+    if (missing(plot.title)) 
+        graphics::title(...)
+    else plot.title
+    invisible()
 }
 
 #' Process logratio data and calculate 40Ar/39Ar ages
@@ -1689,7 +1756,7 @@ process <- function(X,irr,fract=NULL,ca=NULL,k=NULL){
 #' masses <- c("Ar37","Ar38","Ar39","Ar40","Ar36")
 #' dlabels <- c("H1","AX","L1","L2")
 #' X <- read(samplefile,masses,"EXB#",c(3,15),kfile,cafile,dfile,dlabels)
-#' plotcorr(X$covmat)
+#' plotcorr(X)
 #' @export
 read <- function(xfile,masses,blabel,Jpos,kfile=NULL,cafile=NULL,
                   dfile=NULL,dlabels=NULL,MS="ARGUS-VI"){
@@ -1737,13 +1804,12 @@ test <- function(builddata=FALSE,option=TRUE){
     fract <- list(fractionation(fd37file,"L2",PH=TRUE),
                   fractionation(fd40file,"H1",PH=FALSE))
     
-    if (option){
-        X <- read(samplefile,masses,blanklabel,Jpos)
-        ages <- process(X,irr)
-    } else {
+    if (option){ # full propagation
         X <- read(samplefile,masses,blanklabel,Jpos,
                   kfile,cafile,dfile,dlabels)
         ages <- process(X,irr,fract)
+    } else {
+
     }
 
     if (builddata){
@@ -1755,7 +1821,10 @@ test <- function(builddata=FALSE,option=TRUE){
 
 }
 
+#graphics.off()
+#rm(list=ls())
 #setwd("/home/pvermees/Dropbox/Ar-Ar_Redux/ArArRedux/R")
-#ages <- test(builddata=FALSE,option=FALSE)
+#ages <- test(option=TRUE)
+#plotcorr(ages)
 #summary(ages)
 #weightedmean(ages,"MD")

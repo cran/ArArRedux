@@ -44,6 +44,6 @@ masses <- c("Ar37","Ar38","Ar39","Ar40","Ar36")
 mk <- loaddata(kfile,masses)
 lk <- fitlogratios(blankcorr(mk,"EXB#","K:"),"Ar40")
 k <- getmasses(lk,"Ar39","Ar40") # subset on the relevant isotopes
-plotcorr(k$covmat)
+plotcorr(k)
 }
 

@@ -25,6 +25,6 @@ data(Melbourne)
 C <- calibration(Melbourne$X,"DCAL")
 A <- massfractionation(C,Melbourne$fract)
 D9 <- decaycorrection(A,Melbourne$irr,"Ar39")
-plotcorr(D9$covmat)
+plotcorr(D9)
 }
 

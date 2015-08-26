@@ -4,10 +4,10 @@
 \alias{plotcorr}
 \title{Plot a matrix with correlation coefficients}
 \usage{
-plotcorr(covmat)
+plotcorr(X)
 }
 \arguments{
-\item{covmat}{a covariance matrix}
+\item{X}{a data structure (list) containing an item called `covmat' (covariance matrix)}
 }
 \description{
 Converts the covariance matrix to a correlation matrix and plots
@@ -15,6 +15,6 @@ this is a coloured image for visual inspection.
 }
 \examples{
 data(Melbourne)
-plotcorr(Melbourne$X$covmat)
+plotcorr(Melbourne$X)
 }
 

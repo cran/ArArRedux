@@ -37,6 +37,6 @@ of indices or labels.
 data(Melbourne)
 ages <- process(Melbourne$X,Melbourne$irr,Melbourne$fract)
 MD <- subset(ages,labels=c("MD2-1","MD2-2","MD2-3","MD2-4","MD2-5"))
-plotcorr(MD$covmat)
+plotcorr(MD)
 }
 

@@ -8,7 +8,7 @@
 #' @author David Philips \email{dphillip@@unimelb.edu.au}
 #' @examples
 #' data(Melbourne)
-#' plotcorr(Melbourne$X$covmat)
+#' plotcorr(Melbourne$X)
 NULL
 
 #' The \code{redux} class

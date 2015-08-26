@@ -24,6 +24,6 @@ given the 40Ar*/39ArK ratios of the samples and fluence monitors
 data(Melbourne)
 R <- get4039(Melbourne$X,Melbourne$irr)
 J <- getJfactors(R)
-plotcorr(J$covmat)
+plotcorr(J)
 }
 

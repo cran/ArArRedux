@@ -24,6 +24,6 @@ intercept data
 \examples{
 data(Melbourne)
 R <- get4039(Melbourne$X,Melbourne$irr)
-plotcorr(R$covmat)
+plotcorr(R)
 }
 

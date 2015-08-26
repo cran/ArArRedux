@@ -20,6 +20,6 @@ Apply the detector calibration for multicollector data
 \examples{
 data(Melbourne)
 C <- calibration(Melbourne$X,"DCAL")
-plotcorr(C$covmat)
+plotcorr(C)
 }
 
